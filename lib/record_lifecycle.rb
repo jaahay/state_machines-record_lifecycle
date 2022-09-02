@@ -2,8 +2,6 @@
 
 require 'active_record'
 
-require_relative 'model'
-
 require_relative 'state_table_statement'
 
 require_relative 'extensions'

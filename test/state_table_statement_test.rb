@@ -21,19 +21,102 @@ class TableDefinitionTest < BaseTestCase
     ActiveRecord::Migration.verbose = @original_verbose
   end
 
-  def test_state_machine
+  def test_create_state_table
     ActiveRecord::Schema.define do
-      create_table :records do |t|
-        t.string :name
-        t.string :external_id
-      end
-
+      create_table :records
       create_state_table :records
     end
 
-    assert @connection.column_exists?(:records, :name)
-    assert @connection.column_exists?(:records, :external_id)
-    assert @connection.column_exists?(:records_state_transitions, :records_id)
-    assert @connection.column_exists?(:records_state_transitions, :created_at)
+    assert @connection.column_exists?(:records_state_transitions, :records_id, type: :bigint, null: false,
+                                                                               index: true)
+
+    assert @connection.column_exists?(:records_state_transitions, :state, type: :string, null: false, index: true)
+    assert @connection.column_exists?(:records_state_transitions, :former_state, type: :string, null: false,
+                                                                                 index: true)
+
+    # assert false == @connection.column_exists?(:records_state_transitions, :arguments)
+    # assert false == @connection.column_exists?(:records_state_transitions, :changes)
+
+    assert @connection.column_exists?(:records_state_transitions, :created_at, type: :datetime, null: false,
+                                                                               index: true)
+    assert @connection.column_exists?(:records_state_transitions, :effective_at, type: :datetime, null: false,
+                                                                                 index: true)
+  ensure
+    begin
+      @connection.drop_table(:records_state_transitions)
+    rescue StandardError
+      nil
+    end
+    begin
+      @connection.drop_table(:records)
+    rescue StandardError
+      nil
+    end
+  end
+
+  def test_add_arguments
+    ActiveRecord::Schema.define do
+      create_table :records
+      create_state_table :records, add_arguments: true
+    end
+
+    assert @connection.column_exists?(:records_state_transitions, :arguments, type: :json)
+  ensure
+    begin
+      @connection.drop_table(:records_state_transitions)
+    rescue StandardError
+      nil
+    end
+    begin
+      @connection.drop_table(:records)
+    rescue StandardError
+      nil
+    end
+  end
+
+  def test_add_changes
+    ActiveRecord::Schema.define do
+      create_table :records
+      create_state_table :records, add_changes: true
+    end
+
+    assert @connection.column_exists?(:records_state_transitions, :changes, type: :json)
+  ensure
+    begin
+      @connection.drop_table(:records_state_transitions)
+    rescue StandardError
+      nil
+    end
+    begin
+      @connection.drop_table(:records)
+    rescue StandardError
+      nil
+    end
+  end
+
+  def test_errors_table
+    ActiveRecord::Schema.define do
+      create_table :records
+      create_state_table :records, create_error_table: true
+    end
+
+    assert @connection.column_exists?(:records_state_errors, :records_id, type: :bigint, null: false)
+    assert @connection.column_exists?(:records_state_errors, :message, type: :string)
+  ensure
+    begin
+      @connection.drop_table(:records_state_errors)
+    rescue StandardError
+      nil
+    end
+    begin
+      @connection.drop_table(:records_state_transitions)
+    rescue StandardError
+      nil
+    end
+    begin
+      @connection.drop_table(:records)
+    rescue StandardError
+      nil
+    end
   end
 end
