@@ -14,7 +14,6 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
-  spec.test_files    = spec.files.grep(%r{^test/})
   spec.required_ruby_version = '>= 2.6'
   spec.require_paths = ['lib']
 
@@ -24,4 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'minitest-reporters'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'sqlite3', '~> 1.3'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end

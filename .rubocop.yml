@@ -1,0 +1,3 @@
+AllCops:
+  NewCops: enable
+  StyleGuideBaseURL: https://rubystyle.guide
