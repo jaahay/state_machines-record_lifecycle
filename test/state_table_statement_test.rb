@@ -2,7 +2,7 @@
 
 require_relative 'test_helper'
 
-class TableDefinitionTest < BaseTestCase
+class StateTableStatementTest < BaseTestCase
   setup do
     @original_verbose = ActiveRecord::Migration.verbose
     ActiveRecord::Migration.verbose = false
@@ -27,27 +27,24 @@ class TableDefinitionTest < BaseTestCase
       create_state_table :records
     end
 
-    assert @connection.column_exists?(:records_state_transitions, :records_id, type: :bigint, null: false,
-                                                                               index: true)
-
+    assert @connection.column_exists?(:records_state_transitions, :records_id,
+                                      type: :bigint, null: false, index: true)
     assert @connection.column_exists?(:records_state_transitions, :state, type: :string, null: false, index: true)
-    assert @connection.column_exists?(:records_state_transitions, :former_state, type: :string, null: false,
-                                                                                 index: true)
+    assert @connection.column_exists?(:records_state_transitions, :former_state,
+                                      type: :string, null: false, index: true)
 
     # assert false == @connection.column_exists?(:records_state_transitions, :arguments)
     # assert false == @connection.column_exists?(:records_state_transitions, :changes)
 
-    assert @connection.column_exists?(:records_state_transitions, :created_at, type: :datetime, null: false,
-                                                                               index: true)
-    assert @connection.column_exists?(:records_state_transitions, :effective_at, type: :datetime, null: false,
-                                                                                 index: true)
+    assert @connection.column_exists?(:records_state_transitions, :created_at,
+                                      type: :datetime, null: false,
+                                      index: true)
+    assert @connection.column_exists?(:records_state_transitions, :effective_at,
+                                      type: :datetime, null: false,
+                                      index: true)
   ensure
     begin
       @connection.drop_table(:records_state_transitions)
-    rescue StandardError
-      nil
-    end
-    begin
       @connection.drop_table(:records)
     rescue StandardError
       nil
@@ -64,10 +61,6 @@ class TableDefinitionTest < BaseTestCase
   ensure
     begin
       @connection.drop_table(:records_state_transitions)
-    rescue StandardError
-      nil
-    end
-    begin
       @connection.drop_table(:records)
     rescue StandardError
       nil
@@ -84,10 +77,6 @@ class TableDefinitionTest < BaseTestCase
   ensure
     begin
       @connection.drop_table(:records_state_transitions)
-    rescue StandardError
-      nil
-    end
-    begin
       @connection.drop_table(:records)
     rescue StandardError
       nil
@@ -105,15 +94,7 @@ class TableDefinitionTest < BaseTestCase
   ensure
     begin
       @connection.drop_table(:records_state_errors)
-    rescue StandardError
-      nil
-    end
-    begin
       @connection.drop_table(:records_state_transitions)
-    rescue StandardError
-      nil
-    end
-    begin
       @connection.drop_table(:records)
     rescue StandardError
       nil

@@ -3,6 +3,7 @@
 begin
   require 'pry-byebug'
 rescue LoadError
+  nil
 end
 require 'minitest/reporters'
 Minitest::Reporters.use!(Minitest::Reporters::SpecReporter.new)
